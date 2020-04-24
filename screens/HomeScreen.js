@@ -1,38 +1,54 @@
-import React from 'react';
-import { View, Text, Button, Platform, Image } from 'react-native';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Platform } from 'react-native';
+import { Layout, Button, Modal, Text, Card } from '@ui-kitten/components';
+import { DrawerActions } from '@react-navigation/native';
 
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButtonCustom from '../components/UI/HeaderButtonCustom';
 
+import Colors from '../constants/Colors';
+
 const HomeScreen = props => {
   return (
-    <View>
+    <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>HomeScreen</Text>
+      <Card
+        style={{
+          flex: 1,
+          margin: 2,
+          width: 300
+        }}
+        status="primary"
+      >
+        <Text>Warning</Text>
+      </Card>
       <Button
         title="go to about"
-        onPress={() => props.navigation.navigate('About Me')}
+        onPress={() => props.navigation.navigate('AboutMe')}
       />
-    </View>
+    </Layout>
   );
 };
 
 export const screenOptions = navData => {
   return {
     headerTitle: 'Bogdan.Digital',
-    headerLeft: () => (
+    headerLeft: props => (
       <HeaderButtons HeaderButtonComponent={HeaderButtonCustom}>
         <Item
           title="Menu"
-          color="white"
           iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
-          onPress={() => navData.navigation.toggleDrawer()}
+          onPress={() =>
+            navData.navigation.dispatch(DrawerActions.openDrawer())
+          }
         />
       </HeaderButtons>
     ),
-    headerRight: () => (
+    headerRight: props => (
       <HeaderButtons HeaderButtonComponent={HeaderButtonCustom}>
         <Item
-          color="white"
+          // color={colorTheme === 'light' ? Colors.accent : 'white'}
           title="Cart"
           iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
           onPress={() => navData.navigation.navigate('Blog')}

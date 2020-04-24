@@ -1,5 +1,7 @@
 import 'react-native-gesture-handler';
-import * as React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { Platform, SafeAreaView, Button, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -11,7 +13,10 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 import Colors from '../constants/Colors';
-
+import { logout } from '../redux/authReducer/auth-actions';
+import AuthScreen, {
+  screenOptions as authNavigationOptions
+} from '../screens/AuthScreen';
 import HomeScreen, {
   screenOptions as homeNavigationOptions
 } from '../screens/HomeScreen';
@@ -25,9 +30,18 @@ import PortfolioScreen, {
   screenOptions as portfolioNavigationOptions
 } from '../screens/PortfolioScreen';
 
+import UserMessageContainer, {
+  screenOptions as userMessageContainerOptions
+} from '../screens/UserMessageContainer';
+
+import UserMessage, {
+  screenOptions as userMessageOptions
+} from '../screens/UserMessage';
+import { setThemeAction } from '../redux/themeReducer/action-theme';
+
 const defaultNavOptions = {
   headerStyle: {
-    backgroundColor: '#283E4A' //Platform.OS === 'android' ? Colors.primary : ''
+    backgroundColor: Colors.primary //Platform.OS === 'android' ? Colors.primary : ''
   },
   headerTitleStyle: {
     fontFamily: 'open-sans-bold'
@@ -49,7 +63,7 @@ const MainStack = () => {
         options={homeNavigationOptions}
       />
       <MainStackNavigator.Screen
-        name="About Me"
+        name="AboutMe"
         component={AboutMeScreen}
         options={aboutNavigationOptions}
       />
@@ -66,27 +80,13 @@ const MainStack = () => {
     </MainStackNavigator.Navigator>
   );
 };
-
-const BlogNavigator = createStackNavigator();
 const AboutNavigator = createStackNavigator();
-const PortfolioNavigator = createStackNavigator();
 
-const BlogStackNavigator = navData => {
-  return (
-    <BlogNavigator.Navigator screenOptions={defaultNavOptions}>
-      <BlogNavigator.Screen
-        name="Blog"
-        component={BlogScreen}
-        options={blogNavigationOptions}
-      />
-    </BlogNavigator.Navigator>
-  );
-};
-const AboutStackNavigator = navData => {
+const AboutStackNavigator = props => {
   return (
     <AboutNavigator.Navigator screenOptions={defaultNavOptions}>
       <AboutNavigator.Screen
-        name="About Me"
+        name="AboutMe"
         component={AboutMeScreen}
         options={aboutNavigationOptions}
       />
@@ -94,106 +94,45 @@ const AboutStackNavigator = navData => {
   );
 };
 
-const PortfolioStackNavigator = navData => {
+const AuthNavigator = createStackNavigator();
+
+const AuthNavigatorStack = props => {
   return (
-    <PortfolioNavigator.Navigator screenOptions={defaultNavOptions}>
-      <PortfolioNavigator.Screen
-        name="Portfolio"
-        component={PortfolioScreen}
-        options={portfolioNavigationOptions}
+    <AuthNavigator.Navigator screenOptions={defaultNavOptions}>
+      <AuthNavigator.Screen
+        name="Authentication"
+        component={AuthScreen}
+        options={authNavigationOptions}
       />
-    </PortfolioNavigator.Navigator>
+    </AuthNavigator.Navigator>
   );
 };
 
-const DrwaerNavigator = createDrawerNavigator();
+const UserNavigator = createStackNavigator();
 
-const DrwaerStackNavigator = navData => {
+const UserStackNavigator = () => {
   return (
-    <DrwaerNavigator.Navigator
-      initialRouteName="Home"
-      // drawerContent={props => {
-      //   return (
-      //     <View style={{ flex: 1, paddingTop: 20 }}>
-      //       <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
-      //         <DrawerItemList {...props} />
-      //         {/*<Button
-      //         title="Logout"
-      //         color={Colors.primary}
-      //         onPress={() => {
-      //           dispatch(authActions.logout());
-      //           // props.navigation.navigate('Auth');
-      //         }}
-      //       />*/}
-      //       </SafeAreaView>
-      //     </View>
-      //   );
-      //}}
-      drawerContentOptions={{
-        activeTintColor: Colors.primary
-      }}
-    >
-      <DrwaerNavigator.Screen
-        name="Home"
-        component={MainStack}
-        options={{
-          drawerIcon: props => (
-            <Ionicons
-              name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
-              size={23}
-              color={props.color}
-            />
-          )
-        }}
+    <UserNavigator.Navigator screenOptions={defaultNavOptions}>
+      <UserNavigator.Screen
+        name="Messages"
+        component={UserMessageContainer}
+        options={userMessageContainerOptions}
       />
-      <DrwaerNavigator.Screen
-        name="Blog"
-        component={BlogStackNavigator}
-        options={{
-          drawerIcon: props => (
-            <Ionicons
-              name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
-              size={23}
-              color={props.color}
-            />
-          )
-        }}
+      <UserNavigator.Screen
+        name="Create/Edit Message"
+        component={UserMessage}
+        options={userMessageOptions}
       />
-      <DrwaerNavigator.Screen
-        name="About Me"
-        component={AboutStackNavigator}
-        options={{
-          drawerIcon: props => (
-            <Ionicons
-              name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
-              size={23}
-              color={props.color}
-            />
-          )
-        }}
-      />
-      <DrwaerNavigator.Screen
-        name="Portfolio"
-        component={PortfolioStackNavigator}
-        options={{
-          drawerIcon: props => (
-            <Ionicons
-              name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
-              size={23}
-              color={props.color}
-            />
-          )
-        }}
-      />
-    </DrwaerNavigator.Navigator>
+    </UserNavigator.Navigator>
   );
 };
 
 export const Tab = createBottomTabNavigator();
 
-function MyTabs() {
+const MyTabs = props => {
   return (
     <Tab.Navigator
+      headerMode="none"
       tabBarOptions={{
         labelStyle: {
           fontSize: 14,
@@ -204,7 +143,7 @@ function MyTabs() {
           width: 100
         },
         style: {
-          backgroundColor: '#283E4A'
+          backgroundColor: Colors.primary
         },
         bottomTabs: {
           titleDisplayMode: 'alwaysHide'
@@ -212,29 +151,32 @@ function MyTabs() {
         showLabel: false,
         showIcon: true,
         inactiveTintColor: 'white',
-        activeTintColor: Colors.accent
+        activeTintColor: 'yellow'
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={DrwaerStackNavigator}
+        name="Main"
+        component={MainStack}
         options={{
           tabBarIcon: props => (
             <Ionicons
-              name={Platform.OS === 'android' ? 'md-settings' : 'ios-settings'}
+              name={Platform.OS === 'android' ? 'md-home' : 'ios-home'}
               size={23}
               color={props.color}
             />
           )
         }}
       />
+
       <Tab.Screen
-        name="Settings"
-        component={BlogStackNavigator}
+        name="AboutMe"
+        component={AboutStackNavigator}
         options={{
           tabBarIcon: props => (
             <Ionicons
-              name={Platform.OS === 'android' ? 'md-contact' : 'ios-contact'}
+              name={
+                Platform.OS === 'android' ? 'md-briefcase' : 'ios-briefcase'
+              }
               size={23}
               color={props.color}
             />
@@ -243,11 +185,106 @@ function MyTabs() {
       />
     </Tab.Navigator>
   );
-}
-const AppNavigator = () => {
+};
+
+const DrwaerNavigator = createDrawerNavigator();
+
+const DrwaerStackNavigator = navData => {
+  const dispatch = useDispatch();
+  const theme = useSelector(state => state.theme.theme);
+
+  const isAuth = useSelector(state => !!state.auth.token);
+  const didTryAutoLogin = useSelector(state => state.auth.didTryAutoLogin);
+
+  return (
+    <DrwaerNavigator.Navigator
+      drawerStyle={{
+        backgroundColor: theme === 'light' ? 'white' : Colors.primary,
+        marginTop: 30,
+        width: 240
+      }}
+      initialRouteName="Home"
+      drawerContent={props => {
+        return (
+          <View style={{ flex: 1, paddingTop: 20 }}>
+            <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+              <DrawerItemList {...props} />
+              <Button
+                title={isAuth ? 'Logout' : 'You are logout'}
+                color={theme === 'light' ? Colors.primary : 'white'}
+                onPress={() => {
+                  dispatch(logout());
+                }}
+              />
+            </SafeAreaView>
+          </View>
+        );
+      }}
+      drawerContentOptions={{
+        activeTintColor: theme === 'light' ? Colors.primary : 'yellow',
+        inactiveTintColor: theme === 'light' ? Colors.primary : 'white'
+      }}
+    >
+      <DrwaerNavigator.Screen
+        name="Main"
+        component={MyTabs}
+        options={{
+          drawerIcon: props => (
+            <Ionicons
+              name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+              size={23}
+              color={props.color}
+            />
+          )
+        }}
+      />
+      {isAuth ? (
+        <DrwaerNavigator.Screen
+          name="Messages"
+          component={UserStackNavigator}
+          options={{
+            drawerIcon: props => (
+              <Ionicons
+                name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                size={23}
+                color={props.color}
+              />
+            ),
+
+            color: 'white'
+          }}
+        />
+      ) : (
+        <DrwaerNavigator.Screen
+          name="Login Message"
+          component={AuthNavigatorStack}
+          options={{
+            drawerIcon: props => (
+              <Ionicons
+                name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                size={23}
+                color={props.color}
+              />
+            ),
+
+            color: 'white'
+          }}
+        />
+      )}
+    </DrwaerNavigator.Navigator>
+  );
+};
+
+const AppNavigator = props => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setThemeAction(props.theme));
+  });
+
   return (
     <NavigationContainer>
-      <MyTabs />
+      <DrwaerStackNavigator />
     </NavigationContainer>
   );
 };
