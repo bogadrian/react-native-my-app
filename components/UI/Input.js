@@ -100,6 +100,7 @@ const Input = props => {
             value={inputState.value}
             onChangeText={textChangeHandler}
             onBlur={lostFocusHandler}
+            floatingLabel
           />
           {!inputState.isValid && inputState.touched && (
             <View style={styles.errorContainer}>
@@ -119,7 +120,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: 'open-sans-bold',
-    marginVertical: 4
+    marginVertical: 4,
+    padding: 10
   },
 
   errorContainer: {

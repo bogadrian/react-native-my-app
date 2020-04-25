@@ -8,8 +8,6 @@ export const messageActions = {
 export const fetchMessageAction = () => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
-    const userId = getState().auth.userId;
-    const userEmail = getState().auth.email;
 
     try {
       const response = await fetch(
@@ -42,7 +40,7 @@ export const fetchMessageAction = () => {
         });
       }
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 };
@@ -67,7 +65,7 @@ export const messageActionDelete = id => {
         payload: { id, userId }
       });
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 };
@@ -99,7 +97,7 @@ export const messageActionCreate = messageBody => {
         payload: { id: resData.name, messageBody, userId, userEmail }
       });
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 };
@@ -129,7 +127,7 @@ export const messageActionUpdate = (id, messageBody) => {
         payload: { id, messageBody, userId, userEmail }
       });
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 };

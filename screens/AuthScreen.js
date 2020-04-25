@@ -4,13 +4,11 @@ import {
   View,
   KeyboardAvoidingView,
   StyleSheet,
-  Text,
-  Button,
   Alert,
   TouchableOpacity,
   ActivityIndicator
 } from 'react-native';
-import { Layout, Divider } from '@ui-kitten/components';
+import { Layout, Icon, Button, Card, Text } from '@ui-kitten/components';
 import { DrawerActions } from '@react-navigation/native';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,7 +16,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButtonCustom from '../components/UI/HeaderButtonCustom';
 
 import Input from '../components/UI/Input';
-import Card from '../components/UI/Card';
+//import Card from '../components/UI/Card';
 import Colors from '../constants/Colors';
 import * as authActions from '../redux/authReducer/auth-actions';
 
@@ -54,12 +52,21 @@ const AuthScreen = props => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  let color;
-  if (theme === 'light') {
-    color = Colors.primary;
-  } else {
-    color = 'white';
-  }
+  const shakeIconRef = React.useRef();
+
+  useEffect(() => {
+    shakeIconRef.current.startAnimation();
+  }, []);
+
+  const renderShakeIcon = props => (
+    <Icon
+      {...props}
+      ref={shakeIconRef}
+      animationConfig={{ cycles: Infinity }}
+      animation="shake"
+      name="person-done-outline"
+    />
+  );
 
   const [isSignup, setIsSignup] = useState(false);
   const dispatch = useDispatch();
@@ -163,34 +170,29 @@ const AuthScreen = props => {
                 {isLoading ? (
                   <ActivityIndicator size="small" color={Colors.primary} />
                 ) : (
-                  <TouchableOpacity onPress={authHandler}>
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        fontFamily: 'open-sans',
-                        color: color
-                      }}
-                    >
-                      {isSignup ? 'Sign Up' : 'Login'}
-                    </Text>
-                  </TouchableOpacity>
+                  <Button
+                    style={styles.button}
+                    onPress={authHandler}
+                    accessoryRight={renderShakeIcon}
+                    appearance="outline"
+                    status="success"
+                  >
+                    {isSignup ? 'Sign Up' : 'Login'}
+                  </Button>
                 )}
               </View>
 
               <View style={{ marginTop: 20 }}>
-                <TouchableOpacity
+                <Button
                   onPress={() => {
                     setIsSignup(prevState => !prevState);
                   }}
+                  style={styles.button}
+                  appearance="outline"
+                  status="primary"
                 >
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontFamily: 'open-sans',
-                      color: color
-                    }}
-                  >{`Switch to ${isSignup ? 'Login' : 'Sign Up'}`}</Text>
-                </TouchableOpacity>
+                  {`Switch to ${isSignup ? 'Login' : 'Sign Up'}`}
+                </Button>
               </View>
             </View>
           </ScrollView>
@@ -220,16 +222,19 @@ export const screenOptions = navData => {
 const styles = StyleSheet.create({
   authContainer: {
     width: '90%',
-
     padding: 20,
     margin: 10,
     textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center'
   },
+  button: {
+    width: 250
+  },
   buttonContainer: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 20
   }
 });
 

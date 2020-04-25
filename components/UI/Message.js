@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+
 import {
   View,
   StyleSheet,
@@ -7,9 +7,9 @@ import {
   TouchableNativeFeedback,
   Platform
 } from 'react-native';
-import { Layout, Text } from '@ui-kitten/components';
+import { Layout, Text, Card } from '@ui-kitten/components';
 
-import Card from './Card';
+//import Card from './Card';
 
 const Message = props => {
   let TouchableCmp = TouchableOpacity;
@@ -19,24 +19,34 @@ const Message = props => {
   }
 
   return (
-    <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Card style={styles.message}>
-        <View style={styles.touchable}>
-          <TouchableCmp onPress={props.onSelect} useForeground>
-            <View>
-              <View style={styles.details}>
-                <View>
-                  <Text style={styles.title}>{props.title}</Text>
+    <Layout
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <View style={{ marginVertical: 10 }}>
+        <Card style={styles.message}>
+          <View style={styles.touchable}>
+            <TouchableCmp onPress={props.onSelect} useForeground>
+              <View>
+                <View style={styles.details}>
+                  <View>
+                    <Text style={styles.title}>{props.title}</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.bodyMessage}>{props.messageBody}</Text>
+                  </View>
                 </View>
-                <View>
-                  <Text style={styles.bodyMessage}>{props.messageBody}</Text>
+                <View style={styles.actions} pushFunc={props.pushFun}>
+                  {props.children}
                 </View>
               </View>
-              <View style={styles.actions}>{props.children}</View>
-            </View>
-          </TouchableCmp>
-        </View>
-      </Card>
+            </TouchableCmp>
+          </View>
+        </Card>
+      </View>
     </Layout>
   );
 };
@@ -44,9 +54,7 @@ const Message = props => {
 const styles = StyleSheet.create({
   message: {
     height: '100%',
-    width: 300,
-    margin: 20,
-    marginVertical: 20
+    width: 350
   },
   bodyMessage: {
     fontSize: 16,
@@ -58,8 +66,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   details: {
-    alignItems: 'center',
-    padding: 10
+    alignItems: 'center'
   },
   title: {
     fontFamily: 'open-sans-bold',
@@ -71,8 +78,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: '20%',
-    height: '20%',
+    marginTop: '15%',
+    height: '25%',
     paddingHorizontal: 20
   }
 });

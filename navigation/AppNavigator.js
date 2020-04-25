@@ -17,6 +17,7 @@ import { logout } from '../redux/authReducer/auth-actions';
 import AuthScreen, {
   screenOptions as authNavigationOptions
 } from '../screens/AuthScreen';
+
 import HomeScreen, {
   screenOptions as homeNavigationOptions
 } from '../screens/HomeScreen';

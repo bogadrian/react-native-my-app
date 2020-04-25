@@ -4,11 +4,16 @@ import * as eva from '@eva-design/eva';
 
 import { ThemeContext } from './theme-context';
 
-import { ApplicationProvider, Button, Text } from '@ui-kitten/components';
+import {
+  ApplicationProvider,
+  IconRegistry,
+  Button,
+  Text
+} from '@ui-kitten/components';
 
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
-
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import store from './redux/root-reducer';
 
 import AppNavigator from './navigation/AppNavigator';
@@ -43,6 +48,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
+      <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva[theme]}>
         <ThemeContext.Provider value={{ theme, toggleTheme }}>
           <AppNavigator theme={theme} />

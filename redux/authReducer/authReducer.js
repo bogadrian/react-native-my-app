@@ -1,30 +1,35 @@
-import { AUTHENTICATE, LOGOUT, SET_DID_TRY_AL } from './auth-actions';
+import {
+  AUTHENTICATE,
+  LOGOUT,
+  SET_DID_TRY_AL,
+  UPDATE_USER
+} from './auth-actions';
 
-const initialState = {
+const INITIAL_STATE = {
   token: null,
   userId: null,
   email: null,
-  didTryAutoLogin: false
+  displayName: null
 };
 
-export default authReducer = (state = initialState, action) => {
+export default authReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case AUTHENTICATE:
       return {
+        ...state,
         token: action.token,
         userId: action.userId,
-        email: action.email,
-        didTryAutoLogin: true
+        email: action.email
       };
-    case SET_DID_TRY_AL:
+
+    case UPDATE_USER:
       return {
         ...state,
-        didTryAutoLogin: true
+        displayName: action.displayName
       };
     case LOGOUT:
       return {
-        ...initialState,
-        didTryAutoLogin: true
+        ...INITIAL_STATE
       };
     // case SIGNUP:
     //   return {

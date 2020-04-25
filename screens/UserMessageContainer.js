@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-const abortController = new AbortController();
+
 import {
   FlatList,
-  SectionList,
   View,
   Button,
   Alert,
@@ -12,7 +11,7 @@ import {
   Platform
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Layout, Text } from '@ui-kitten/components';
+import { Layout, Text, Divider } from '@ui-kitten/components';
 import { DrawerActions } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButtonCustom from '../components/UI/HeaderButtonCustom';
@@ -23,10 +22,11 @@ import {
   fetchMessageAction
 } from '../redux/messageReducer/message-action';
 import Colors from '../constants/Colors';
-
+const abortController = new AbortController();
 const UserMessageContainer = props => {
   const theme = useSelector(state => state.theme.theme);
   let userId = useSelector(state => state.auth.userId);
+  const currentUserEmail = useSelector(state => state.auth.email);
 
   const admin = '2YNdUbFITsYhmzJfbNYBDgFbgpM2';
   const adminEmail = 'bogdan4adrian4tech';
@@ -50,13 +50,14 @@ const UserMessageContainer = props => {
         if (
           key === userId ||
           userId === admin ||
-          userEmail === adminEmail ||
+          email === adminEmail ||
           key === admin
         ) {
           mes.push(messageRe);
         }
       }
     });
+
     return mes;
   });
 
@@ -65,6 +66,7 @@ const UserMessageContainer = props => {
   const fetchFunc = useCallback(async () => {
     setError(null);
     setIsLoading(true);
+
     try {
       await dispatch(fetchMessageAction());
       setIsLoading(false);
@@ -89,7 +91,15 @@ const UserMessageContainer = props => {
   }, [dispatch, fetchFunc]);
 
   const editMessagesHandler = id => {
-    props.navigation.navigate('Create/Edit Message', { mesId: id });
+    props.navigation.navigate('Create/Edit Message', {
+      mesId: id
+    });
+  };
+
+  const answerMessage = email => {
+    props.navigation.navigate('Create/Edit Message', {
+      email
+    });
   };
 
   const deleteHandler = id => {
@@ -139,32 +149,45 @@ const UserMessageContainer = props => {
             <Message
               title={item.userEmail}
               messageBody={item.messageBody}
-              onSelect={() => editMessagesHandler(item.id)}
+              onSelect={() => {
+                item.userEmail === currentUserEmail
+                  ? editMessagesHandler(item.id)
+                  : null;
+              }}
               it={item}
             >
-              <TouchableOpacity
-                onPress={() => props.navigation.push('Create/Edit Message')}
-              >
-                <Ionicons
-                  name={Platform.OS === 'android' ? 'md-mail' : 'ios-mail'}
-                  color={theme === 'light' ? Colors.primary : 'white'}
-                  size={40}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => editMessagesHandler(item.id)}>
-                <Ionicons
-                  name={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
-                  color={theme === 'light' ? 'blue' : 'yellow'}
-                  size={40}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={deleteHandler.bind(this, item.id)}>
-                <Ionicons
-                  name={Platform.OS === 'android' ? 'md-trash' : 'ios-trash'}
-                  color="red"
-                  size={40}
-                />
-              </TouchableOpacity>
+              {currentUserEmail !== item.userEmail ? (
+                <TouchableOpacity
+                  onPress={answerMessage.bind(this, item.userEmail)}
+                >
+                  <Ionicons
+                    name={Platform.OS === 'android' ? 'md-mail' : 'ios-mail'}
+                    color={theme === 'light' ? Colors.primary : 'white'}
+                    size={40}
+                  />
+                </TouchableOpacity>
+              ) : null}
+
+              {currentUserEmail === item.userEmail ? (
+                <TouchableOpacity onPress={() => editMessagesHandler(item.id)}>
+                  <Ionicons
+                    name={
+                      Platform.OS === 'android' ? 'md-create' : 'ios-create'
+                    }
+                    color={theme === 'light' ? 'blue' : 'yellow'}
+                    size={40}
+                  />
+                </TouchableOpacity>
+              ) : null}
+              {item.userEmail === currentUserEmail ? (
+                <TouchableOpacity onPress={deleteHandler.bind(this, item.id)}>
+                  <Ionicons
+                    name={Platform.OS === 'android' ? 'md-trash' : 'ios-trash'}
+                    color="red"
+                    size={40}
+                  />
+                </TouchableOpacity>
+              ) : null}
             </Message>
           )}
         />

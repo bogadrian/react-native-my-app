@@ -1,29 +1,33 @@
 import React, { useEffect, useCallback, useState, useReducer } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-  Keyboard
-} from 'react-native';
+
 import {
   View,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Keyboard,
   ScrollView,
+  Button,
   StyleSheet,
   Platform,
   Alert,
   KeyboardAvoidingView,
-  ActivityIndicator
+  ActivityIndicator,
+  Vibration
 } from 'react-native';
+import { updateWithPushToken } from '../redux/authReducer/auth-actions';
+import * as Permissions from 'expo-permissions';
 import { Layout, Text } from '@ui-kitten/components';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButtonCustom from '../components/UI/HeaderButtonCustom';
+import { Notifications } from 'expo';
 import {
   messageActionCreate,
   messageActionUpdate
 } from '../redux/messageReducer/message-action';
-import Input from '../components/UI/Input';
+import InputComponenet from '../components/UI/Input';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
@@ -51,9 +55,11 @@ const formReducer = (state, action) => {
 };
 
 const UserMessage = props => {
-  const userId = useSelector(state => state.auth.userId);
+  const [notification, setNotification] = useState(notification);
+
   const theme = useSelector(state => state.theme.theme);
   const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState();
   const [error, setError] = useState();
 
   let messageId;
@@ -87,9 +93,13 @@ const UserMessage = props => {
   });
 
   useEffect(() => {
-    if (error) {
+    let canc = true;
+    if (error && canc) {
       Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
     }
+    return () => {
+      canc = false;
+    };
   }, [error]);
 
   const submitHandler = useCallback(async () => {
@@ -116,7 +126,7 @@ const UserMessage = props => {
     } catch (err) {
       setError(err.message);
     }
-
+    sendPushNotification();
     setIsLoading(false);
   }, [dispatch, messageId, formState]);
 
@@ -128,10 +138,86 @@ const UserMessage = props => {
         isValid: inputValidity,
         input: inputIdentifier
       });
+      //sendPushNotification();
     },
-
     [dispatchFormState]
   );
+
+  useEffect(() => {
+    let isSubscribed = true;
+    const callPerm = async () => {
+      if (isSubscribed) {
+        await registerForPushNotificationsAsync();
+      }
+    };
+    callPerm();
+    let notificationSubscription = Notifications.addListener(
+      handleNotification
+    );
+    return () => {
+      isSubscribed = false;
+      notificationSubscription = null;
+    };
+  }, [registerForPushNotificationsAsync]);
+
+  const handleNotification = notification => {
+    Vibration.vibrate(100);
+    console.log(notification);
+    setNotification(notification);
+  };
+
+  const registerForPushNotificationsAsync = async () => {
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      Alert.alert(
+        'You have to grant permission in order to recive notifications from us'[
+          { text: 'Okay' }
+        ]
+      );
+      return;
+    }
+
+    const newToken = await Notifications.getExpoPushTokenAsync();
+    if (newToken) {
+      setToken(newToken);
+    }
+
+    dispatch(updateWithPushToken(newToken));
+    // const { email, token, usId } = existToken;
+
+    // if (existToken) {
+    //   if (email !== currentUserEmail && token !== newToken && userId !== usId) {
+    //     dispatch(setTokenAction(newToken));
+    //   }
+    // }
+  };
+
+  const sendPushNotification = async () => {
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Bogdan.Digital Notification',
+      body: formState.inputValues.messageBody,
+      data: { data: formState.inputValues.messageBody },
+      _displayInForeground: true
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(message)
+    });
+  };
 
   if (isLoading) {
     return (
@@ -144,6 +230,7 @@ const UserMessage = props => {
       </Layout>
     );
   }
+
   return (
     <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -154,7 +241,7 @@ const UserMessage = props => {
         >
           <ScrollView>
             <View style={styles.form}>
-              <Input
+              <InputComponenet
                 id="messageBody"
                 label="Message"
                 errorText="Please enter a valid text!"
