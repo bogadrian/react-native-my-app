@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import { updateWithPushToken } from '../redux/authReducer/auth-actions';
 import * as Permissions from 'expo-permissions';
-import { Layout, Text } from '@ui-kitten/components';
+import { Layout } from '@ui-kitten/components';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -138,7 +138,6 @@ const UserMessage = props => {
         isValid: inputValidity,
         input: inputIdentifier
       });
-      //sendPushNotification();
     },
     [dispatchFormState]
   );
@@ -190,13 +189,6 @@ const UserMessage = props => {
     }
 
     dispatch(updateWithPushToken(newToken));
-    // const { email, token, usId } = existToken;
-
-    // if (existToken) {
-    //   if (email !== currentUserEmail && token !== newToken && userId !== usId) {
-    //     dispatch(setTokenAction(newToken));
-    //   }
-    // }
   };
 
   const sendPushNotification = async () => {
@@ -224,8 +216,16 @@ const UserMessage = props => {
       <Layout
         style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
       >
-        <View style={styles.centered}>
-          <ActivityIndicator size="large" color={Colors.primary} />
+        <View
+          style={{
+            ...styles.centered,
+            backgroundColor: theme === 'light' ? 'white' : Colors.primary
+          }}
+        >
+          <ActivityIndicator
+            size="large"
+            color={theme === 'light' ? Colors.primary : 'white'}
+          />
         </View>
       </Layout>
     );

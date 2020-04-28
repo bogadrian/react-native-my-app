@@ -1,19 +1,36 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { View, TouchableOpacity } from 'react-native';
-import { Layout, Text } from '@ui-kitten/components';
+import { StyleSheet, ScrollView, View } from 'react-native';
+import { Layout } from '@ui-kitten/components';
 
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButtonCustom from '../components/UI/HeaderButtonCustom';
-
-import UserImage from '../components/UI/UserImage';
+import BlogCard from '../components/BlogCard';
 
 const BlogScreen = props => {
   return (
     <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <View>
-        <Text>BlogScreen</Text>
-      </View>
+      <ScrollView>
+        <View style={styles.blogPage}>
+          <BlogCard
+            text="I built and put online my first real app! I finished my first real app. I overcome the todo's world! 😀 It feels so good that I was able to…"
+            title="“My first real app“"
+            url={'https://bogdan.digital/park-your-tir/'}
+          />
+          <BlogCard
+            text="I built My blog with GatsbyJs I just finished building my blog with GatsbyJs. This blog! GatsbyJs is a framework built on top of React. But…"
+            title="What I learned from building my blog with Gatsbyjs"
+            url={
+              'https://bogdan.digital/what-i-learned-from-building-my-blog-with-gatsby/'
+            }
+          />
+          <BlogCard
+            text="document.write('Hello World') From a new web developer! My name is Bogdan Adrian and, as many others out there, I am a self-taught developer…"
+            title="When I first started"
+            url={'https://bogdan.digital/when-i-started/'}
+          />
+        </View>
+      </ScrollView>
     </Layout>
   );
 };
@@ -34,19 +51,20 @@ export const screenOptions = navData => {
         />
       </HeaderButtons>
     ),
-    headerRight: () => (
+    headerRight: props => (
       <HeaderButtons HeaderButtonComponent={HeaderButtonCustom}>
         <Item
-          title="Menu"
-          iconName={
-            Platform.OS === 'android'
-              ? 'md-arrow-dropleft-circle'
-              : 'ios-arrow-dropleft-circle'
-          }
-          onPress={() => navData.navigation.navigate('Home')}
+          title="Portfolio"
+          iconName={Platform.OS === 'android' ? 'md-albums' : 'ios-albums'}
+          onPress={() => navData.navigation.push('Portfolio')}
         />
       </HeaderButtons>
     )
   };
 };
+
+const styles = StyleSheet.create({
+  blogPage: { marginVertical: -10 }
+});
+
 export default BlogScreen;

@@ -5,7 +5,6 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   Alert,
-  TouchableOpacity,
   ActivityIndicator
 } from 'react-native';
 import { Layout, Icon, Button, Card, Text } from '@ui-kitten/components';
@@ -16,7 +15,6 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButtonCustom from '../components/UI/HeaderButtonCustom';
 
 import Input from '../components/UI/Input';
-//import Card from '../components/UI/Card';
 import Colors from '../constants/Colors';
 import * as authActions from '../redux/authReducer/auth-actions';
 
@@ -46,8 +44,6 @@ const formReducer = (state, action) => {
 };
 
 const AuthScreen = props => {
-  const theme = useSelector(state => state.theme.theme);
-
   const error = useSelector(state => state.error.error);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -226,7 +222,8 @@ const styles = StyleSheet.create({
     margin: 10,
     textAlign: 'center',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    borderWidth: 0
   },
   button: {
     width: 250

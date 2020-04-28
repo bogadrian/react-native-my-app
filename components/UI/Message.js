@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { Layout, Text, Card } from '@ui-kitten/components';
 
-//import Card from './Card';
 
 const Message = props => {
   let TouchableCmp = TouchableOpacity;

@@ -5,7 +5,6 @@ const INITIAL_STATE = {
   messages: []
 };
 
-//const userId = 'u4';
 const messagesReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case messageActions.CREATE_MESSAGE:

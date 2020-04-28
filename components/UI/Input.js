@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     padding: 10
   },
-
   errorContainer: {
     marginVertical: 5
   },

@@ -1,9 +1,4 @@
-import {
-  AUTHENTICATE,
-  LOGOUT,
-  SET_DID_TRY_AL,
-  UPDATE_USER
-} from './auth-actions';
+import { AUTHENTICATE, LOGOUT, UPDATE_USER } from './auth-actions';
 
 const INITIAL_STATE = {
   token: null,
@@ -31,11 +26,7 @@ export default authReducer = (state = INITIAL_STATE, action) => {
       return {
         ...INITIAL_STATE
       };
-    // case SIGNUP:
-    //   return {
-    //     token: action.token,
-    //     userId: action.userId
-    //   };
+
     default:
       return state;
   }

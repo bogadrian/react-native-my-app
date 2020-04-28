@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
 import * as eva from '@eva-design/eva';
 
@@ -7,8 +8,7 @@ import { ThemeContext } from './theme-context';
 import {
   ApplicationProvider,
   IconRegistry,
-  Button,
-  Text
+  Toggle
 } from '@ui-kitten/components';
 
 import { AppLoading } from 'expo';
@@ -25,15 +25,33 @@ const fetchFonts = () => {
     'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
   });
 };
+const toggleTheme = () => {
+  const nextTheme = theme === 'light' ? 'dark' : 'light';
+  setTheme(nextTheme);
+};
+
+const useToggleState = (initialState = false) => {
+  const [checked, setChecked] = useState(initialState);
+
+  let theme;
+  if (checked === false) {
+    theme = 'light';
+  } else {
+    theme = 'dark';
+  }
+
+  const successToggleState = isChecked => {
+    setChecked(isChecked);
+  };
+
+  return { checked, onChange: successToggleState, toggleTheme, theme };
+};
 
 const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [theme, setTheme] = useState('light');
 
-  const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(nextTheme);
-  };
+  const successToggleState = useToggleState();
+  const { theme } = successToggleState;
 
   if (!fontLoaded) {
     return (
@@ -52,39 +70,23 @@ const App = () => {
       <ApplicationProvider {...eva} theme={eva[theme]}>
         <ThemeContext.Provider value={{ theme, toggleTheme }}>
           <AppNavigator theme={theme} />
-          <Button
-            style={{
-              marginTop: -1,
-              marginBottom: 0,
-              borderColor: Colors.primary,
-              backgroundColor: Colors.primary
-            }}
-            onPress={toggleTheme}
-          >
-            {theme === 'light' ? (
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 16
-                }}
-              >
-                GO DARK{' '}
-              </Text>
-            ) : (
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 16
-                }}
-              >
-                GO LIGHT
-              </Text>
-            )}
-          </Button>
+          <Toggle
+            style={styles.toggle}
+            status="control"
+            {...successToggleState}
+          ></Toggle>
         </ThemeContext.Provider>
       </ApplicationProvider>
     </Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  toggle: {
+    margin: 0,
+    borderColor: Colors.primary,
+    backgroundColor: Colors.primary
+  }
+});
 
 export default App;

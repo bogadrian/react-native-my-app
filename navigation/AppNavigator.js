@@ -42,7 +42,7 @@ import { setThemeAction } from '../redux/themeReducer/action-theme';
 
 const defaultNavOptions = {
   headerStyle: {
-    backgroundColor: Colors.primary //Platform.OS === 'android' ? Colors.primary : ''
+    backgroundColor: Colors.primary
   },
   headerTitleStyle: {
     fontFamily: 'open-sans-bold'
@@ -50,7 +50,7 @@ const defaultNavOptions = {
   headerBackTitleStyle: {
     fontFamily: 'open-sans'
   },
-  headerTintColor: 'white' //Platform.OS === 'android' ? 'white' : Colors.primary
+  headerTintColor: 'white'
 };
 
 const MainStackNavigator = createStackNavigator();
@@ -69,14 +69,14 @@ const MainStack = () => {
         options={aboutNavigationOptions}
       />
       <MainStackNavigator.Screen
-        name="Blog"
-        component={BlogScreen}
-        options={blogNavigationOptions}
-      />
-      <MainStackNavigator.Screen
         name="Portfolio"
         component={PortfolioScreen}
         options={portfolioNavigationOptions}
+      />
+      <MainStackNavigator.Screen
+        name="Blog"
+        component={BlogScreen}
+        options={blogNavigationOptions}
       />
     </MainStackNavigator.Navigator>
   );
@@ -92,6 +92,19 @@ const AboutStackNavigator = props => {
         options={aboutNavigationOptions}
       />
     </AboutNavigator.Navigator>
+  );
+};
+const PortfolioNavigator = createStackNavigator();
+
+const PortfolioStackNavigator = props => {
+  return (
+    <PortfolioNavigator.Navigator screenOptions={defaultNavOptions}>
+      <PortfolioNavigator.Screen
+        name="Portfolio"
+        component={PortfolioScreen}
+        options={portfolioNavigationOptions}
+      />
+    </PortfolioNavigator.Navigator>
   );
 };
 
@@ -128,66 +141,6 @@ const UserStackNavigator = () => {
   );
 };
 
-export const Tab = createBottomTabNavigator();
-
-const MyTabs = props => {
-  return (
-    <Tab.Navigator
-      headerMode="none"
-      tabBarOptions={{
-        labelStyle: {
-          fontSize: 14,
-          color: 'white',
-          marginBottom: 0
-        },
-        tabStyle: {
-          width: 100
-        },
-        style: {
-          backgroundColor: Colors.primary
-        },
-        bottomTabs: {
-          titleDisplayMode: 'alwaysHide'
-        },
-        showLabel: false,
-        showIcon: true,
-        inactiveTintColor: 'white',
-        activeTintColor: 'yellow'
-      }}
-    >
-      <Tab.Screen
-        name="Main"
-        component={MainStack}
-        options={{
-          tabBarIcon: props => (
-            <Ionicons
-              name={Platform.OS === 'android' ? 'md-home' : 'ios-home'}
-              size={23}
-              color={props.color}
-            />
-          )
-        }}
-      />
-
-      <Tab.Screen
-        name="AboutMe"
-        component={AboutStackNavigator}
-        options={{
-          tabBarIcon: props => (
-            <Ionicons
-              name={
-                Platform.OS === 'android' ? 'md-briefcase' : 'ios-briefcase'
-              }
-              size={23}
-              color={props.color}
-            />
-          )
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
-
 const DrwaerNavigator = createDrawerNavigator();
 
 const DrwaerStackNavigator = navData => {
@@ -195,7 +148,6 @@ const DrwaerStackNavigator = navData => {
   const theme = useSelector(state => state.theme.theme);
 
   const isAuth = useSelector(state => !!state.auth.token);
-  const didTryAutoLogin = useSelector(state => state.auth.didTryAutoLogin);
 
   return (
     <DrwaerNavigator.Navigator
@@ -227,18 +179,19 @@ const DrwaerStackNavigator = navData => {
       }}
     >
       <DrwaerNavigator.Screen
-        name="Main"
-        component={MyTabs}
+        name="Home"
+        component={MainStack}
         options={{
           drawerIcon: props => (
             <Ionicons
-              name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+              name={Platform.OS === 'android' ? 'ios-home' : 'ios-home'}
               size={23}
               color={props.color}
             />
           )
         }}
       />
+
       {isAuth ? (
         <DrwaerNavigator.Screen
           name="Messages"
@@ -246,7 +199,7 @@ const DrwaerStackNavigator = navData => {
           options={{
             drawerIcon: props => (
               <Ionicons
-                name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                name={Platform.OS === 'android' ? 'md-mail' : 'ios-mail'}
                 size={23}
                 color={props.color}
               />
@@ -262,7 +215,7 @@ const DrwaerStackNavigator = navData => {
           options={{
             drawerIcon: props => (
               <Ionicons
-                name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                name={Platform.OS === 'android' ? 'md-log-in' : 'ios-log-in'}
                 size={23}
                 color={props.color}
               />
@@ -276,6 +229,79 @@ const DrwaerStackNavigator = navData => {
   );
 };
 
+export const Tab = createBottomTabNavigator();
+
+const MyTabs = props => {
+  return (
+    <Tab.Navigator
+      headerMode="none"
+      tabBarOptions={{
+        labelStyle: {
+          fontSize: 14,
+          color: 'white',
+          marginBottom: 0
+        },
+        tabStyle: {
+          width: 100
+        },
+        style: {
+          backgroundColor: Colors.primary
+        },
+        bottomTabs: {
+          titleDisplayMode: 'alwaysHide'
+        },
+        showLabel: false,
+        showIcon: true,
+        inactiveTintColor: 'white',
+        activeTintColor: 'yellow'
+      }}
+    >
+      <Tab.Screen
+        name="Main"
+        component={DrwaerStackNavigator}
+        options={{
+          tabBarIcon: props => (
+            <Ionicons
+              name={Platform.OS === 'android' ? 'md-home' : 'ios-home'}
+              size={23}
+              color={props.color}
+            />
+          )
+        }}
+      />
+
+      <Tab.Screen
+        name="Portfolio"
+        component={PortfolioStackNavigator}
+        options={{
+          tabBarIcon: props => (
+            <Ionicons
+              name={
+                Platform.OS === 'android' ? 'md-briefcase' : 'ios-briefcase'
+              }
+              size={23}
+              color={props.color}
+            />
+          )
+        }}
+      />
+      <Tab.Screen
+        name="AboutMe"
+        component={AboutStackNavigator}
+        options={{
+          tabBarIcon: props => (
+            <Ionicons
+              name={Platform.OS === 'android' ? 'md-person' : 'ios-person'}
+              size={23}
+              color={props.color}
+            />
+          )
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
 const AppNavigator = props => {
   const dispatch = useDispatch();
 
@@ -285,7 +311,7 @@ const AppNavigator = props => {
 
   return (
     <NavigationContainer>
-      <DrwaerStackNavigator />
+      <MyTabs />
     </NavigationContainer>
   );
 };

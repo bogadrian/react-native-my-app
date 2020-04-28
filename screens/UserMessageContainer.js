@@ -125,8 +125,18 @@ const UserMessageContainer = props => {
   }
   if (isLoading) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color={Colors.primary} />
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: theme === 'light' ? 'white' : Colors.primary
+        }}
+      >
+        <ActivityIndicator
+          size="large"
+          color={theme === 'light' ? Colors.primary : 'white'}
+        />
       </View>
     );
   }
