@@ -8,4 +8,4 @@ I think the desihn is ok and it is much better than I ca do on web with CSS.
 
 The toggle light - dark mode button at the bottom of page is pretty cool too I think.
 
-Finished to build on 2 aprile 2020
+Finished to build on 28 aprile 2020
