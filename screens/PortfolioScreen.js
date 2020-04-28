@@ -39,6 +39,12 @@ const PortfolioScreen = props => {
       <ScrollView>
         <View>
           <PortfolioCard
+            img={require('../assets/react-native.png')}
+            title="React Native App"
+            text="An app built with React Native Expo, React Navigation 5, Redux and Kitten UI"
+            url={'https://expo.io/@bogdan_dev/bogdan-digital'}
+          />
+          <PortfolioCard
             img={require('../assets/pyt.png')}
             title="Park Your Tir"
             text="An app to create and find parkingfor lorry drivers"

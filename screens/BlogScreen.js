@@ -13,6 +13,11 @@ const BlogScreen = props => {
       <ScrollView>
         <View style={styles.blogPage}>
           <BlogCard
+            text="I learned React Native in 1 month. To be honest, I learned the basics. There are still a lot for me to learn. And I learned building a……"
+            title="React Native App"
+            url={'https://bogdan.digital/react-native-app/'}
+          />
+          <BlogCard
             text="I built and put online my first real app! I finished my first real app. I overcome the todo's world! 😀 It feels so good that I was able to…"
             title="“My first real app“"
             url={'https://bogdan.digital/park-your-tir/'}

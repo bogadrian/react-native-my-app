@@ -2,6 +2,7 @@ import React, { useState, useReducer, useCallback, useEffect } from 'react';
 import {
   ScrollView,
   View,
+  Platform,
   KeyboardAvoidingView,
   StyleSheet,
   Alert,
@@ -131,7 +132,7 @@ const AuthScreen = props => {
       }}
     >
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={Platform.OS == 'ios' ? 'padding' : false}
         keyboardVerticalOffset={2}
         style={styles.screen}
       >
@@ -217,7 +218,7 @@ export const screenOptions = navData => {
 
 const styles = StyleSheet.create({
   authContainer: {
-    width: '90%',
+    width: '100%',
     padding: 20,
     margin: 10,
     textAlign: 'center',

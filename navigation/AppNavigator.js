@@ -162,13 +162,21 @@ const DrwaerStackNavigator = navData => {
           <View style={{ flex: 1, paddingTop: 20 }}>
             <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
               <DrawerItemList {...props} />
-              <Button
-                title={isAuth ? 'Logout' : 'You are logout'}
-                color={theme === 'light' ? Colors.primary : 'white'}
-                onPress={() => {
-                  dispatch(logout());
-                }}
-              />
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <View
+                  style={{
+                    width: 200
+                  }}
+                >
+                  <Button
+                    title={isAuth ? 'Logout' : 'You are logout'}
+                    color="red"
+                    onPress={() => {
+                      dispatch(logout());
+                    }}
+                  />
+                </View>
+              </View>
             </SafeAreaView>
           </View>
         );

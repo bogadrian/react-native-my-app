@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center'
   },
-  image: { height: 200, width: 350 }
+  image: { height: 200, width: 300 }
 });
 
 export default PortfolioCard;

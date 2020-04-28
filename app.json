@@ -1,8 +1,13 @@
 {
   "expo": {
-    "name": "bogdan-digital",
-    "slug": "ogdan-digital",
-    "platforms": ["ios", "android", "web"],
+    "name": "Bogdan Digital",
+    "slug": "bogdan-digital",
+    "privacy": "public",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,9 +19,13 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "A demo personal app built with React Native. It uses Redux, redux Thunk, React Navigation 5, some must have a dependency and Kitten UI. Please\n\nThere is a protected behind authentication area where a registered user can send me a message, edit or delete his own messages. Please\n\nThere is also a push notification arriving on the message sent, but; I didn't implement a database to store the push tokens. The authentication occurs with Firebase Rest API and the authentication, in this case, does not allow to create a user object either to loop over it and find the eventual token. I was supposed to use the Firebase auth3 app integration to do that but I started with the Rest API and for this demo, the purpose is ok like so.\n\nI think the design is ok and it is much better than I can do on the web with CSS.\n\nThe toggle light-dark mode button at the bottom of the page is pretty cool too I think.\n\nFinished to build on 28 April 2020",
+    "githubUrl": "https://github.com/bogadrian/react-native-my-app"
   }
 }

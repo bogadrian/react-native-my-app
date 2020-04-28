@@ -103,7 +103,8 @@ const UserMessage = props => {
   }, [error]);
 
   const submitHandler = useCallback(async () => {
-    if (!formState.formIsValid) {
+    let canc = true;
+    if (!formState.formIsValid && canc) {
       Alert.alert('Wrong input!', 'Please check the errors in the form.', [
         { text: 'Okay' }
       ]);
@@ -128,6 +129,7 @@ const UserMessage = props => {
     }
     sendPushNotification();
     setIsLoading(false);
+    canc = false;
   }, [dispatch, messageId, formState]);
 
   const inputChangeHandler = useCallback(
@@ -161,7 +163,6 @@ const UserMessage = props => {
 
   const handleNotification = notification => {
     Vibration.vibrate(100);
-    console.log(notification);
     setNotification(notification);
   };
 
